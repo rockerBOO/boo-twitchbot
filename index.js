@@ -1,4 +1,5 @@
 var irc = require('twitch-irc');
+var bot = require('./bot/bot');
 
 var clientOptions = {
     options: {
@@ -15,11 +16,13 @@ var clientOptions = {
 var client = new irc.client(clientOptions);
 
 function findCommand(message) {
-	parts = message.match(/\![A-Za-Z0-9]\s+(.*)/)
+	parts = message.match(/\!([A-Za-z0-9]+)/);
 
 	if (parts) {
-		client.logger.info('puahts'+ parts)
+        return parts[1]
 	}
+
+    return ""
 }
 
 client.connect();
@@ -43,63 +46,15 @@ client.addListener('pong', function (latency) {
 });
 
 client.addListener('hosting', function (latency) {
-    client.logger.info("We on this host train to no where fast. " + client.latency)
+    client.logger.info("We on this host train to no where fast. " + client.latency);
 });
 
 client.addListener('chat', function (channel, user, message) {
-    console.log(user.username + ': ' + message);
+    client.logger.info(channel + ' ' + user.username + ': ' + message);
 
-    console.log(channel)
-    console.log(user)
-    console.log(message)
-
-    console.log(client.latencyReal)
-
-    if (message.toLowerCase() === '!hello') {
+    if (command = findCommand(message)) {
+        bot.run(command)
+    } else if (message.toLowerCase() === '!hello') {
         client.say(channel, 'Hello, ' + user.username + '!');
     }
-    else if (message.indexOf('!host') === 0) {
-    	bot.command.Host(channel, user, message);
-
-    } 
 });
-
-var bot = function(options) {
-	var self = this
-
-	self.channel = '';
-
-	self.command = new command();
-}
-
-bot.prototype.comeOnline = function(message) {
-	if (typeof(message)==='undefined') message = ""
-
-	client.say(self.channel, message)
-};
-
-var command = function () {
-
-}
-
-command.prototype.Hello = function(channel, user, message) {
-    client.say(channel, 'Hello, ' + user.username + '!');
-};
-
-command.prototype.Host = function(channel, user, message) {
-	var host = message.substring(6)
-
-	client.host(channel, host).then(function() {
-		client.say(channel, 'Now hosting '+ host + '.')
-	});
-
-	client.logger.info('Hosting '+ host)
-};
-
-command.prototype.Ping = function(channel, user, message) {	
-	client.ping().then(function() {
-		client.say(channel, 'Reporting! Checking Twitch...')
-	});
-};
-
-var bot = new bot();

@@ -13,6 +13,7 @@ var clientOptions = {
     },
     channels: ['rockerboo']
 }
+
 var client = new irc.client(clientOptions);
 
 function findCommand(message) {
@@ -54,7 +55,5 @@ client.addListener('chat', function (channel, user, message) {
 
     if (command = findCommand(message)) {
         bot.run(command)
-    } else if (message.toLowerCase() === '!hello') {
-        client.say(channel, 'Hello, ' + user.username + '!');
     }
 });

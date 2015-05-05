@@ -7,8 +7,8 @@ var clientOptions = {
         //debugIgnore: ['ping', 'chat', 'action']
     },
     identity: {
-        username: 'rockerboo',
-        password: 'oauth:srm53kj46nve0agoqyfgtb0vvhvspz'
+        username: '',
+        password: ''
     },
     channels: ['rockerboo']
 }
